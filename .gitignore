@@ -1,0 +1,48 @@
+# Python bytecode & cache files
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual Environments & Build Artifacts
+.venv/
+venv/
+env/
+ENV/
+build/
+dist/
+*.egg-info/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+
+# Model Weights & Checkpoints
+checkpoints/*
+!checkpoints/.gitkeep
+*.pth
+*.pt
+*.onnx
+*.engine
+*.bin
+*.safetensors
+
+# Local Datasets & Inputs
+dataset/*
+!dataset/.gitkeep
+
+# Generated Pipeline Outputs & Artifacts
+relative_dsm.tif
+calibrated_absolute_dsm.tif
+absolute_dsm_visualization.png
+evaluation_heatmap.png
+vis_depth/
+vis_pointcloud/
+*.ply
+
+# OS & Temp Files
+*.tmp
+*.log
