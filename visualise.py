@@ -13,7 +13,7 @@ else:
 
 RGB_PATH= f"dataset/{img}" 
 # ... (keep the rest of your configuration paths the same)
-ABSOLUTE_DSM_PATH = 'relative_dsm.tif'
+ABSOLUTE_DSM_PATH = 'calibrated_absolute_dsm.tif'
 OUTPUT_IMAGE = 'absolute_dsm_visualization.png'
 
 def visualize_absolute_dsm():

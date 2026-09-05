@@ -1,0 +1,17 @@
+{
+    "id": "S2A_MSIL2A_20230715T101601_R065_T32TNT_20230715T181708_patch_24",
+    "source_image": "S2A_MSIL2A_20230715T101601_R065_T32TNT_20230715T181708_patch_24.tif",
+    "heightmap": "target/heightmap.png",
+    "heightmap_encoding": "grayscale16",
+    "width_px": 512,
+    "height_px": 512,
+    "elevation_range_m": {
+        "min": 386.46,
+        "max": 533.42
+    },
+    "reference_available": true,
+    "real_world_size_m": {
+        "width": 5115.93,
+        "height": 5129.28
+    }
+}
