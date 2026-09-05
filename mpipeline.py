@@ -94,14 +94,20 @@ def run_pipeline():
         raw_depth = model.infer_image(bgr_image)
     h, w = raw_depth.shape
 
+    mesh_subsample = 2
     # --- 3. Process Elevation (The Router) ---
     manifest = {
         "id": os.path.splitext(os.path.basename(img_path))[0],
         "source_image": os.path.basename(img_path),
         "heightmap": OUTPUT_HEIGHTMAP,
         "heightmap_encoding": "grayscale16",
-        "width_px": int(w),
-        "height_px": int(h)
+        # Explicit dimensions for the PNG heightmap
+        "heightmap_width_px": int(w),
+        "heightmap_height_px": int(h),
+        # Explicit dimensions for the OBJ mesh
+        "mesh_width_px": int(w // mesh_subsample),
+        "mesh_height_px": int(h // mesh_subsample),
+        "mesh_subsample_factor": mesh_subsample
     }
 
     if is_georeferenced:
