@@ -35,10 +35,6 @@ dataset/*
 !dataset/.gitkeep
 
 # Generated Pipeline Outputs & Artifacts
-relative_dsm.tif
-calibrated_absolute_dsm.tif
-absolute_dsm_visualization.png
-evaluation_heatmap.png
 vis_depth/
 vis_pointcloud/
 *.ply
@@ -46,3 +42,5 @@ vis_pointcloud/
 # OS & Temp Files
 *.tmp
 *.log
+
+target/*
