@@ -1,20 +1,16 @@
 {
-    "id": "S2A_MSIL2A_20230715T101601_R065_T32TNT_20230715T181708_patch_43",
-    "source_image": "S2A_MSIL2A_20230715T101601_R065_T32TNT_20230715T181708_patch_43.tif",
+    "id": "Screenshot_2026-09-13_21-19-02",
+    "source_image": "Screenshot_2026-09-13_21-19-02.png",
     "heightmap": "target/heightmap.png",
     "heightmap_encoding": "grayscale16",
-    "heightmap_width_px": 512,
-    "heightmap_height_px": 512,
-    "mesh_width_px": 256,
-    "mesh_height_px": 256,
+    "heightmap_width_px": 1908,
+    "heightmap_height_px": 947,
+    "mesh_width_px": 954,
+    "mesh_height_px": 473,
     "mesh_subsample_factor": 2,
     "elevation_range_m": {
-        "min": 379.0,
-        "max": 718.54
+        "min": 0.0,
+        "max": 50.0
     },
-    "reference_available": true,
-    "real_world_size_m": {
-        "width": 5120.43,
-        "height": 5133.73
-    }
+    "reference_available": false
 }
