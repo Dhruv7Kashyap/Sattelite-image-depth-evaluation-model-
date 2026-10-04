@@ -19,10 +19,12 @@ CHECKPOINT_PATH = 'checkpoints/depth_anything_v2_vitl.pth'
 TARGET_DIR = 'target'
 OUTPUT_OBJ = os.path.join(TARGET_DIR, 'terrain_mesh.obj')
 OUTPUT_HEIGHTMAP = os.path.join(TARGET_DIR, 'heightmap.png')
+OUTPUT_TEXTURE = os.path.join(TARGET_DIR, 'texture.jpg')
 OUTPUT_MANIFEST = os.path.join(TARGET_DIR, 'manifest.json')
 
-RELATIVE_FALLBACK_HEIGHT = 50.0  # Height scale in meters for relative mode
-DEFAULT_NON_GEO_SIZE_M = 5000.0  # 5 km default footprint for non-georeferenced images
+# 800m relief over 5km footprint provides realistic topography for non-georeferenced scenes
+RELATIVE_FALLBACK_HEIGHT = 800.0  
+DEFAULT_NON_GEO_SIZE_M = 5000.0  # 5 km default footprint
 
 
 def clear_target_dir(target_dir=TARGET_DIR):
@@ -113,14 +115,8 @@ def run_pipeline():
     ext = os.path.splitext(img_path)[1].lower()
     is_georeferenced = ext in ['.tif', '.tiff']
     
-    # 1. Copy original file untouched into target/ preserving extension
-    texture_filename = f"texture{ext}"
-    output_texture = os.path.join(TARGET_DIR, texture_filename)
-    shutil.copy2(img_path, output_texture)
-    print(f"Copied original image as {output_texture}")
-
-    # 2. Load Image Array for AI Inference
-    print("\n[1/4] Loading Image & Extracting AI Depth...")
+    # 1. Load Image Array for AI and Texture Generation
+    print("\n[1/4] Loading Image & Converting Texture...")
     if is_georeferenced:
         with rasterio.open(img_path) as src:
             bounds = src.bounds
@@ -134,7 +130,16 @@ def run_pipeline():
     else:
         bgr_image = cv2.imread(img_path)
 
+    # 2. Normalize and export as 8-bit texture.jpg for Unity
+    if bgr_image.dtype != np.uint8:
+        texture_export = cv2.normalize(bgr_image, None, 0, 255, cv2.NORM_MINMAX).astype(np.uint8)
+    else:
+        texture_export = bgr_image
+    cv2.imwrite(OUTPUT_TEXTURE, texture_export, [int(cv2.IMWRITE_JPEG_QUALITY), 95])
+    print(f"Exported texture to {OUTPUT_TEXTURE}")
+
     # 3. Run Foundation Model
+    print("Extracting AI Depth...")
     model = DepthAnythingV2(encoder='vitl', features=256, out_channels=[256, 512, 1024, 1024])
     model.load_state_dict(torch.load(CHECKPOINT_PATH, map_location='cpu'))
     model = model.to(DEVICE).eval()
@@ -147,7 +152,7 @@ def run_pipeline():
     manifest = {
         "id": os.path.splitext(os.path.basename(img_path))[0],
         "source_image": os.path.basename(img_path),
-        "texture": output_texture.replace("\\", "/"),
+        "texture": OUTPUT_TEXTURE.replace("\\", "/"),
         "heightmap": OUTPUT_HEIGHTMAP.replace("\\", "/"),
         "heightmap_encoding": "grayscale16",
         "heightmap_width_px": int(w),
@@ -211,7 +216,7 @@ def run_pipeline():
         manifest["elevation_range_m"] = {"min": 0.0, "max": RELATIVE_FALLBACK_HEIGHT}
         manifest["reference_available"] = False
         
-        # 5 km default footprint matching pixel aspect ratio
+        # 5 km default footprint matching aspect ratio
         manifest["real_world_size_m"] = {
             "width": DEFAULT_NON_GEO_SIZE_M,
             "height": round(DEFAULT_NON_GEO_SIZE_M * (float(h) / float(w)), 2)
@@ -239,7 +244,7 @@ def run_pipeline():
     print(f"Target folder populated with:")
     print(f"  - {OUTPUT_OBJ}")
     print(f"  - {OUTPUT_HEIGHTMAP}")
-    print(f"  - {output_texture}")
+    print(f"  - {OUTPUT_TEXTURE}")
     print(f"  - {OUTPUT_MANIFEST}")
 
 
